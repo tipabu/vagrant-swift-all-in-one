@@ -13,6 +13,7 @@ vagrant_boxes = {
   "focal" => "http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-vagrant.box",
   "focal-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-20.04-arm64/versions/20230901.220110.01/providers/parallels.box",
   "jammy" => "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-vagrant.box",
+  "noble" => "http://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64-vagrant.box",
   "jammy-m1" => "https://app.vagrantup.com/luminositylabsllc/boxes/ubuntu-22.04-arm64/versions/20230901.222028.01/providers/parallels.box",
   "dummy" => "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box",
 }
@@ -132,7 +133,7 @@ Vagrant.configure("2") do |global_config|
         v.tags = {'Name' => 'swift'}
       end
 
-      unless vagrant_box.start_with? 'jammy' then
+      if vagrant_box.start_with? 'focal' then
         # Install libssl for Chef (https://github.com/hashicorp/vagrant/issues/10914)
         config.vm.provision "shell",
           inline: "sudo apt-get update -y -qq && "\
