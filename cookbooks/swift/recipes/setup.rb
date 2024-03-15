@@ -59,7 +59,7 @@ required_packages = [
   "libssl-dev", # libssl-dev is required for building wheels from the cryptography package in swift.
   "curl", "gcc", "memcached", "rsync", "sqlite3", "xfsprogs", "git-core", "build-essential",
   "libffi-dev",  "libxml2-dev", "libxml2", "libxslt1-dev", "zlib1g-dev", "autoconf", "libtool",
-  "haproxy", "docker-compose",
+  "haproxy", "docker-compose", "rclone",
 ]
 
 if node['platform_version'] == '22.04'
@@ -232,6 +232,26 @@ template "/home/#{node['username']}/.aws/credentials" do
   owner node['username']
   group node['username']
   mode 0700
+end
+
+# rclone setup
+
+directory "/home/#{node['username']}/.config/rclone" do
+  owner node['username']
+  group node['username']
+  mode 0700
+  action :create
+  recursive true
+end
+template "/home/#{node['username']}/.config/rclone/rclone.conf" do
+  source "/home/config/rclone/rclone.conf.erb"
+  owner node['username']
+  group node['username']
+  mode 0700
+  variables({
+    :base_uri => node['base_uri'],
+    :auth_uri => node['auth_uri'],
+  })
 end
 
 execute "enable bash completer for awscli" do
